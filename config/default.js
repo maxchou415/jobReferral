@@ -1,7 +1,7 @@
 module.exports = {
 	database: 'localhost/jobReferral',
 	name: {
-		'appName': 'jobReferral',
+		'appName': 'CV Referral Platform',
 		'companyName': 'Brocas'
 	},
 	secret: {

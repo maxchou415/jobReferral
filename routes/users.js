@@ -1,9 +1,16 @@
 const router = require('koa-router')()
+
 const services = require('../services/index')
 const mongoose = require('mongoose')
-mongoose.Promise = global.Promise
+const config = require('config')
 
+const appName = config.get('name.appName')
+const companyName = config.get('name.companyName')
+
+
+// Database
 const User = require('../models/usersSchema')
+mongoose.Promise = global.Promise
 
 router.get('/', (ctx, next) => {
   ctx.body = 'this a users response!'
@@ -11,10 +18,17 @@ router.get('/', (ctx, next) => {
 
 router.get('/signup', async (ctx, next) => {
   ctx.render('users/signup', {
-    
+
   })
 })
 
+router.get('/signin', async (ctx, next) => {
+  ctx.state = {
+    title: `Sign In to ${appName}`,
+    appName: appName
+  }
+  await ctx.render('users/signin')
+})
 router.post('/signin', async (ctx, next) => {
   let email = ctx.request.body.email
   let password = ctx.request.body.password
@@ -26,7 +40,25 @@ router.post('/signin', async (ctx, next) => {
     if(login.password !== passwordProcessResult) {
       ctx.send(401, { message: 'Password Incorrent'})
     } else {
-      ctx.send(200, { message: 'Auth Success' })
+      let session = await services.sessionGenerator(login)
+      ctx.session.user = session
+      ctx.state = {
+        title: `Dashboard | ${appName}`
+      }
+      switch (login.role) {
+        case 1:
+          // admin
+          await ctx.redirect('/dashboard')
+          break
+        case 2:
+          // hr
+          await ctx.redirect('/dashboard')
+          break
+        case 3:
+          // staff
+          await ctx.redirect('/dashboard')
+          break
+      }
     }
   } catch (e) {
     ctx.send(404, { message: 'User not found' })

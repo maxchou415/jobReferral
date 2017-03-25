@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<% include ../partials/header %>
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-4 col-md-offset-4">
+					<h3><%= appName %></h3>
+					<div class="well">
+						<form class="" action="/users/signin" method="post">
+							<input type="text" name="email" value="" class="form-control" placeholder="E-Mail">
+							<input type="password" name="password" value="" class="form-control" placeholder="Password">
+							<br />
+							<div class="clearfix">
+								<button type="submit" name="button" class="btn btn-success pull-right">Login</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

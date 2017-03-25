@@ -9,13 +9,11 @@ const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')()
 const logger = require('koa-logger')
 const mongoose = require('mongoose')
-const session = require('koa-generic-session')
+const session = require('koa-session')
+const flash = require('koa-flash')
 const passport = require('koa-passport')
 const config = require('config')
 const respond = require('koa-respond')
-
-app.keys = config.get('secret.session')
-app.use(convert(session()))
 
 const index = require('./routes/index')
 const users = require('./routes/users')
@@ -24,16 +22,27 @@ const apis = require('./routes/apis')
 // database
 mongoose.Promise = global.Promise
 
+// Session config
+let sessionSecret = config.get('secret.session')
+app.keys = [`${sessionSecret}`]
+const sessionConfig = {
+  key: 'session',
+  maxAge: 86400000, // a day
+  overwrite: true,
+  httpOnly: true,
+  signed: true,
+}
+app.use(session(sessionConfig, app))
+
 // middlewares
 app.use(convert(bodyparser))
 app.use(convert(json()))
 app.use(convert(logger()))
 app.use(respond())
+app.use(flash())
 app.use(require('koa-static')(__dirname + '/public'))
 
-// auth
-app.use(passport.initialize())
-app.use(passport.session())
+
 
 app.use(views(__dirname + '/views', {
   extension: 'ejs'
