@@ -18,6 +18,8 @@ const respond = require('koa-respond')
 const index = require('./routes/index')
 const users = require('./routes/users')
 const apis = require('./routes/apis')
+const dashboard = require('./routes/dashboard')
+const refers = require('./routes/refer')
 
 // database
 mongoose.Promise = global.Promise
@@ -59,6 +61,8 @@ app.use(async (ctx, next) => {
 router.use('/', index.routes(), index.allowedMethods())
 router.use('/users', users.routes(), users.allowedMethods())
 router.use('/api', apis.routes(), apis.allowedMethods())
+router.use('/dashboard', dashboard.routes(), dashboard.allowedMethods())
+router.use('/refer', refers.routes(), refers.allowedMethods())
 
 app.use(router.routes(), router.allowedMethods())
 // response

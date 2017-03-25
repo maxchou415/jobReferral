@@ -42,6 +42,7 @@ router.post('/signin', async (ctx, next) => {
     } else {
       let session = await services.sessionGenerator(login)
       ctx.session.user = session
+      
       ctx.state = {
         title: `Dashboard | ${appName}`
       }
